@@ -43,6 +43,7 @@ namespace ProductManagerApi
                 app.UseHsts();
             }
 
+            app.UseCors(builder => builder.WithOrigins("http://localhost:3000/").AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
             app.UseHttpsRedirection();
             app.UseMvc();
         }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagerApi", "ProductManagerApi\ProductManagerApi.csproj", "{0C7C4BCB-8256-4764-BC71-361B322786FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagerApi", "ProductManagerApi\ProductManagerApi.csproj", "{0C7C4BCB-8256-4764-BC71-361B322786FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagerWebApp", "ProductManagerWebApp\ProductManagerWebApp.csproj", "{CBC7E425-2255-4780-9CAC-2BB4E7536CD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0C7C4BCB-8256-4764-BC71-361B322786FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C7C4BCB-8256-4764-BC71-361B322786FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C7C4BCB-8256-4764-BC71-361B322786FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBC7E425-2255-4780-9CAC-2BB4E7536CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC7E425-2255-4780-9CAC-2BB4E7536CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC7E425-2255-4780-9CAC-2BB4E7536CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC7E425-2255-4780-9CAC-2BB4E7536CD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
