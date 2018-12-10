@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductManagerApi.Models;
+using ProductManagerApi.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ProductManagerApi.Controllers
@@ -11,70 +15,81 @@ namespace ProductManagerApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductContext _context;
+        private readonly IProductRepository _productRepository;
 
-        public ProductsController(ProductContext context)
+        public ProductsController(IProductRepository productRepository)
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
-        public ActionResult<List<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return _context.Products.ToList();
+            return await _productRepository.GetAllAsync().ConfigureAwait(false);
         }
 
-        [HttpGet("{id}", Name = "GetProduct")]
-        public ActionResult<Product> GetById(int id)
+        [HttpGet("{id}", Name = nameof(GetByIdAsync))]
+        public async Task<ActionResult<Product>> GetByIdAsync(int id)
         {
-            var item = _context.Products.Find(id);
-            if (item == null)
+            var product = await _productRepository.GetByIdAsync(id).ConfigureAwait(false);
+            if (product == null)
             {
                 return NotFound();
             }
-            return item;
+
+            return product;
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> CreateAsync(Product product)
         {
-            _context.Products.Add(product);
-            _context.SaveChanges();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtRoute("GetProduct", new { id = product.Id }, product);
+            var exists = await _productRepository.SimilarExist(product).ConfigureAwait(false);
+            if (exists)
+            {
+                return BadRequest();
+            }
+
+            await _productRepository.CreateAsync(product).ConfigureAwait(false);
+
+            return CreatedAtRoute(nameof(GetByIdAsync), new { id = product.Id }, product);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Product product)
+        public async Task<IActionResult> UpdateAsync(int id, Product product)
         {
-            var productDb = _context.Products.Find(id);
-            if (productDb == null)
+            if (id != product.Id || !ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            productDb.Name = product.Name;
-            productDb.Category= product.Category;
-            productDb.Active = product.Active;
-            productDb.Price = product.Price;
+            var exists = await _productRepository.SimilarExist(product).ConfigureAwait(false);
+            if (exists)
+            {
+                return BadRequest();
+            }
 
-            _context.Products.Update(productDb);
-            _context.SaveChanges();
+            await _productRepository.UpdateAsync(product).ConfigureAwait(false);
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<Product>> DeleteAsync(int id)
         {
-            var todo = _context.Products.Find(id);
-            if (todo == null)
+            var product = await _productRepository.GetByIdAsync(id).ConfigureAwait(false);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            _context.Products.Remove(todo);
-            _context.SaveChanges();
-            return NoContent();
+            await _productRepository.DeleteAsync(product).ConfigureAwait(false);
+
+            return product;
         }
     }
 }
